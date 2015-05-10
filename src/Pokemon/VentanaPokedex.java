@@ -70,7 +70,7 @@ public class VentanaPokedex extends javax.swing.JFrame {
     }
     
     private void escribeDatos(){
-        Pokemon p = listaPokemons.get(String.valueOf(contador+1));
+        Pokemon p = listaPokemons.get(String.valueOf(contador));
         if (p != null){
             jLabel1.setText(p.nombre);
             jLabel2.setText(p.species);
