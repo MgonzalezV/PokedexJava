@@ -17,4 +17,5 @@ public class Pokemon {
     public String habitat ="";
     public int evolution_parent_pokemon_id =0;
     public String color ="";
+    public int id = 0;
 }

@@ -20,16 +20,24 @@ import javax.swing.JFrame;
 
 /**
  *
- * @author jorgecisneros
+ * @author Marcos González Villalba
+ * 
+ * Los párrafos comentados son un intento fallido de una parte de la aplicación
+ * que ya te preguntaré en clase porque me gustaría saber resolverlo.
  */
 public class VentanaPokedex extends javax.swing.JFrame {
 
     private BufferedImage buffer;
+    private BufferedImage bufferEvolucion;
     private Image imagenPokemons;
+    //private int contadorEvolucion;
     private int contador = 0;
     private int ancho = 200, alto = 200;
- 
-            
+    boolean encontrado = false;
+    //int contador2 = 0;
+    //Pokemon p = new Pokemon();
+    
+    //ArrayList<Integer> familiasPokemons = new ArrayList<Integer>();
 
     
     //////////////////////////////////////////////////////////////
@@ -45,6 +53,9 @@ public class VentanaPokedex extends javax.swing.JFrame {
     //declaro el hashmap para almacenar el resultado de la consulta
     HashMap <String,Pokemon> listaPokemons = new HashMap();
     
+    /**
+     * Creates new form VentanaPokedex
+     */
     /**
      * Creates new form VentanaPokedex
      */
@@ -69,8 +80,31 @@ public class VentanaPokedex extends javax.swing.JFrame {
         escribeDatos();
     }
     
+    private void dibujaMiniatura (int posicion){
+        int fila = posicion / 31;
+        int columna = posicion % 31;
+        Graphics2D g2 = (Graphics2D) bufferEvolucion.getGraphics();
+        //borro lo que hubiera
+        Color c = new Color(0.27f,0.51f,0.70f,1f );
+        g2.setColor(c);
+        g2.fillRect(0, 0, alto, ancho);
+        g2.drawImage(imagenPokemons,
+                0,
+                0,
+                75,
+                75,
+                96*columna,
+                96*fila,
+                96*columna + 96,
+                96*fila + 96,
+                null);
+        repaint();
+        //escribeDatos();
+    }
+    
+    
     private void escribeDatos(){
-        Pokemon p = listaPokemons.get(String.valueOf(contador));
+        Pokemon p = listaPokemons.get(String.valueOf(contador+1));
         if (p != null){
             jLabel1.setText(p.nombre);
             jLabel2.setText(p.species);
@@ -93,10 +127,11 @@ public class VentanaPokedex extends javax.swing.JFrame {
         super.paintComponents(g);
         Graphics2D g2 = (Graphics2D) jPanel1.getGraphics();
         g2.drawImage(buffer, 0, 0,alto,ancho, null);
-        
-        
-        
+        Graphics2D g3 = (Graphics2D) jPanel2.getGraphics();
+        g3.drawImage(bufferEvolucion, 0, 0,alto,ancho, null);
+            
     }
+    
     
    
     public VentanaPokedex() {
@@ -106,12 +141,16 @@ public class VentanaPokedex extends javax.swing.JFrame {
         
         try {
             imagenPokemons = ImageIO.read(getClass().getResource("black-white.png"));
+            
         } catch (IOException ex) {
             Logger.getLogger(VentanaPokedex.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         buffer =(BufferedImage) jPanel1.createImage(ancho,alto);
         Graphics2D g2 = buffer.createGraphics();
+        
+        bufferEvolucion =(BufferedImage) jPanel2.createImage(ancho,alto);
+        Graphics2D g3 = bufferEvolucion.createGraphics();
 
         
         
@@ -134,9 +173,11 @@ public class VentanaPokedex extends javax.swing.JFrame {
                 p.habitat = resultadoConsulta.getString(15);
                 p.evolution_parent_pokemon_id = resultadoConsulta.getInt(7);
                 p.color = resultadoConsulta.getString(13);
+                p.id = resultadoConsulta.getInt(1);
                 
                 //lo guardo en el hashmap
                 listaPokemons.put(resultadoConsulta.getString(1), p);
+                
             }
         }
         catch (Exception e){
@@ -144,6 +185,9 @@ public class VentanaPokedex extends javax.swing.JFrame {
         }
         ////////////////////////////////////////////////////////////////
         dibujaElPokemonQueEstaEnLaPosicion(0);
+        dibujaMiniatura(0);
+        
+        
     }
 
     /**
@@ -273,13 +317,15 @@ public class VentanaPokedex extends javax.swing.JFrame {
         contador--;
         if (contador < 0) contador = 0;
         dibujaElPokemonQueEstaEnLaPosicion(contador);
+        dibujaMiniatura(contador);
     }//GEN-LAST:event_jButton1MousePressed
 
     private void jButton2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MousePressed
         contador++;
         if (contador > 507) {contador = 0;}
         dibujaElPokemonQueEstaEnLaPosicion(contador);
-       
+        
+        dibujaMiniatura(contador);
     }//GEN-LAST:event_jButton2MousePressed
 
     /**
